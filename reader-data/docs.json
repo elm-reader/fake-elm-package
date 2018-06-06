@@ -1,0 +1,1 @@
+[{"name":"Reader","comment":"\n\n    Reader.\n\n    @docs read\n\n","unions":[],"aliases":[],"values":[{"name":"read","comment":"\n\n    Reader.read\n\n","type":"String.String -> Basics.Int -> a -> a"}],"binops":[]}]
