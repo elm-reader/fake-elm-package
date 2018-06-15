@@ -1,0 +1,11 @@
+# Input & output
+reader
+reader.zip
+
+# OS Junk
+.DS_Store
+
+# Editor files
+.*.swp
+.*.swo
+*~
