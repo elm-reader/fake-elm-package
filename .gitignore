@@ -1,6 +1,7 @@
 # Input & output
 reader
 reader.zip
+reader-data/endpoint.json
 
 # OS Junk
 .DS_Store
