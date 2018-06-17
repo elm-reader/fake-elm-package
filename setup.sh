@@ -17,15 +17,8 @@ if [[ ! -d reader ]]; then
   exit 1
 fi
 
-# ZIP it. Follow the symlink if there is one because otherwise `zip` returns 18 (an error),
-# despite working, warning that there is a directory and file with the same name.
 echo "ZIPing reader/ to reader.zip (following symlinks; excluding .git/ and elm-stuff/)"
-if [[ -L reader ]]; then
-  readerpath=$(readlink reader)
-else
-  readerpath=reader
-fi
-zip --exclude '*.git*' --exclude '*elm-stuff*' --symlinks -r reader.zip "$readerpath"
+zip --exclude '*.git*' --exclude '*elm-stuff*' -r -FS reader.zip reader
 
 
 # Hash it
