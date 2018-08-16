@@ -1,7 +1,7 @@
 # Input & output
-reader
-reader.zip
-reader-data/endpoint.json
+browser
+browser.zip
+browser-data/endpoint.json
 
 # OS Junk
 .DS_Store

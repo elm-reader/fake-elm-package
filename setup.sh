@@ -11,36 +11,41 @@ set -o errtrace
 set -o pipefail
 set -o nounset
 
-# Check the reader/ directory exists
-if [[ ! -d reader ]]; then
-  echo "Clone the appropriate version of the reader elm package to ./reader so I can ZIP it"
-  exit 1
-fi
+function setupFor {
+  if [[ ! -d "$1" ]]; then
+    echo "Clone the appropriate version of the $1 elm package to ./$1 so I can ZIP it"
+    exit 1
+  fi
 
-echo "ZIPing reader/ to reader.zip (following symlinks; excluding .git/ and elm-stuff/)"
-zip --exclude '*.git*' --exclude '*elm-stuff*' -r -FS reader.zip reader
+  echo "ZIPing $1/ to $1.zip (following symlinks; excluding .git/ and elm-stuff/)"
+  zip --exclude '*.git*' --exclude '*elm-stuff*' -r -FS "$1.zip" "$1"
 
 
-# Hash it
-echo # space after `zip` output
-echo "Hashing the ZIP"
-if command -v shasum &> /dev/null; then
-  shacmd=shasum
-elif command -v sha1sum &> /dev/null; then
-  shacmd=sha1sum
-else
+  # Hash it
+  echo # space after `zip` output
+  echo "Hashing the ZIP"
+  if command -v shasum &> /dev/null; then
+    shacmd=shasum
+  elif command -v sha1sum &> /dev/null; then
+    shacmd=sha1sum
+  else
+    echo
+    echo "Oh no, neither 'shasum' nor 'sha1sum' are available programs."
+    echo "Quitting without updating $1-data/endpoint.json"
+    exit 1
+  fi
+  ziphash=$($shacmd "$1.zip" | cut -f 1 -d " ")
+  echo "SHA-1 hash of $1.zip is $ziphash"
+
+
+  # Update endpoint.json
+  echo "Updating $1-data/endpoint.json"
+  echo "{
+      \"url\": \"http://localhost:8080/$1.zip\",
+      \"hash\": \"$ziphash\"
+  }" > "$1-data/endpoint.json"
   echo
-  echo "Oh no, neither 'shasum' nor 'sha1sum' are available programs."
-  echo "Quitting without updating reader-data/endpoint.json"
-  exit 1
-fi
-readerhash=$($shacmd reader.zip | cut -f 1 -d " ")
-echo "SHA-1 hash of reader.zip is $readerhash"
+  echo
+}
 
-
-# Update endpoint.json
-echo "Updating reader-data/endpoint.json"
-echo "{
-    \"url\": \"http://localhost:8080/reader.zip\",
-    \"hash\": \"$readerhash\"
-}" > reader-data/endpoint.json
+setupFor browser

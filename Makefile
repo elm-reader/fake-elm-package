@@ -3,6 +3,7 @@ all: build serve
 
 .PHONY: build
 build:
+	./setup.sh
 	docker build -t fake-elm-package .
 
 .PHONY: serve
